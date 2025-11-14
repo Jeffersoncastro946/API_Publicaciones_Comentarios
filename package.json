@@ -1,0 +1,28 @@
+{
+  "name": "api_publicaciones_comentarios",
+  "version": "1.0.0",
+  "description": "Repositorio para desarrollo de proyecto de diseño digital",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --watch server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jeffersoncastro946/API_Publicaciones_Comentarios.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Jeffersoncastro946/API_Publicaciones_Comentarios/issues"
+  },
+  "homepage": "https://github.com/Jeffersoncastro946/API_Publicaciones_Comentarios#readme",
+  "dependencies": {
+    "argon2": "^0.44.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.15.3",
+    "zod": "^4.1.12"
+  }
+}
