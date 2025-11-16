@@ -10,3 +10,25 @@ GET http://localhost:8180/api/publicaciones
 GET http://localhost:8180/api/publicaciones/{{postID}}
 
 ### POST Crear una nueva publicación
+@userID=22580be7-c28b-11f0-bb93-6e0506219b55
+POST http://localhost:8180/api/publicaciones
+Content-Type: application/json
+
+{
+  "title": "Publicación #{{$random.integer(1,1000)}}",
+  "description": "{{$random.lorem.sentence}}",
+  "user_id": "{{userID}}"
+}
+
+### PUT Actualizar una publicación por ID
+PUT http://localhost:8180/api/publicaciones/{{postID}}
+Content-Type: application/json
+
+{
+  "title": "Publicación Actualizada",
+  "description": "{{$random.lorem.sentence}}",
+  "user_id": "{{userID}}"
+}
+
+### DELETE Eliminar una publicación por ID
+DELETE http://localhost:8180/api/publicaciones/{{postID}}

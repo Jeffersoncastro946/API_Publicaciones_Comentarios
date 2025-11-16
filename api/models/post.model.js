@@ -5,7 +5,7 @@ const postModel = zod.object({
     title: zod.string().min(3).max(100),
     description: zod.string().min(3).max(100).nullable(),
     user_id: zod.guid(),
-    created_at: zod.iso.datetime().nullable()
+    created_at: zod.iso.datetime().optional()
 }).strict()
 
 export default postModel;

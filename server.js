@@ -19,8 +19,10 @@ app.use(express.urlencoded());
 app.use(express.json());
 
 //Rutas
+
+
 app.use('/api/publicaciones', pubRouter);
-app.use('/', (req, res)=>{
+app.use('/api/', (req, res)=>{
     return res.send('Bienvenido al proyecto de publicaciones y comentarios')
 });
 

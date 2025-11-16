@@ -16,7 +16,6 @@ export class response{
         code = 400,
         message = "Bad request"})
     {
-        console.error(message);
         return this.success({res, code, message});
     }
 
@@ -25,7 +24,6 @@ export class response{
         code = 500,
         message = "Internal server error"})
     {
-        console.error(message);
         return this.success({res, code, message})
     }
 }
