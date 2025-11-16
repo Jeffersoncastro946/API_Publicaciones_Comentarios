@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: unah1234
       MYSQL_DATABASE: publicaciones_db
       MYSQL_USER: unah_admin
-      MYSQL_PASSWORD: unah1234##
+      MYSQL_PASSWORD: unah1234
     ports:
       - "3310:3306"
     volumes:

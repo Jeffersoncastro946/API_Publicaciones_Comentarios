@@ -1,3 +1,5 @@
+
+
 -- Eliminar tablas si existieran (útil para desarrollo)
 DROP TABLE IF EXISTS publicaciones;
 DROP TABLE IF EXISTS comentarios;
