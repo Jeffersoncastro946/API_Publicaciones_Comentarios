@@ -4,6 +4,8 @@ import {es} from "zod/locales"
 import {config} from "zod";
 import {errorHandler} from "./api/middlewares/errorHandler.js";
 import pubRouter from "./api/routes/publicaciones.route.js";
+import authRouter from "./api/routes/auth.route.js";
+
 
 config(es());
 
@@ -19,8 +21,7 @@ app.use(express.urlencoded());
 app.use(express.json());
 
 //Rutas
-
-
+app.use('/auth', authRouter);
 app.use('/api/publicaciones', pubRouter);
 app.use('/api/', (req, res)=>{
     return res.send('Bienvenido al proyecto de publicaciones y comentarios')
