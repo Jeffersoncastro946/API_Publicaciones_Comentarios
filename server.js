@@ -1,8 +1,11 @@
 import express from 'express';
 import {loadEnvFile} from "node:process"
+import {es} from "zod/locales"
+import {config} from "zod";
 import {errorHandler} from "./api/middlewares/errorHandler.js";
 import pubRouter from "./api/routes/publicaciones.route.js";
 
+config(es());
 
 loadEnvFile();
 let app = express();
@@ -16,11 +19,10 @@ app.use(express.urlencoded());
 app.use(express.json());
 
 //Rutas
-app.use('/publicaciones', pubRouter);
+app.use('/api/publicaciones', pubRouter);
 app.use('/', (req, res)=>{
     return res.send('Bienvenido al proyecto de publicaciones y comentarios')
 });
-
 
 //Manejo de errores
 app.use(errorHandler);

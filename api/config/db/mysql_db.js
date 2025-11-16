@@ -1,7 +1,8 @@
 import {createPool} from "mysql2/promise"
-import {env} from "node:process";
+import {loadEnvFile} from "node:process";
+loadEnvFile();
 
-if(!env) throw new Error("Ocurrió un error al cargar las variables de entorno para la DB");
+if(!process.env) throw new Error("Ocurrió un error al cargar el .env para la DB");
 
 const mysqlPool = createPool({
     host: process.env.MYSQL_HOST,

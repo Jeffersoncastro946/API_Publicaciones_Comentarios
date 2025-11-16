@@ -1,0 +1,31 @@
+export class response{
+    static success ({
+        res,
+        code = 200,
+        message = "Done successfully",
+        data = null})
+    {
+        return res.status(code).json({
+            success: (code < 300),
+            message,
+            data
+        })
+    }
+    static clientError ({
+        res,
+        code = 400,
+        message = "Bad request"})
+    {
+        console.error(message);
+        return this.success({res, code, message});
+    }
+
+    static  serverError ({
+        res,
+        code = 500,
+        message = "Internal server error"})
+    {
+        console.error(message);
+        return this.success({res, code, message})
+    }
+}
