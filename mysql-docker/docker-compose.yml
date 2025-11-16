@@ -3,13 +3,13 @@ version: '3.8'
 services:
   mysql:
     image: mysql:8.0
-    container_name: todos_unah
+    container_name: publicaciones_mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: unah1234
-      MYSQL_DATABASE: todos_unah
-      MYSQL_USER: unah
-      MYSQL_PASSWORD: unah1234
+      MYSQL_DATABASE: publicaciones_db
+      MYSQL_USER: unah_admin
+      MYSQL_PASSWORD: unah1234##
     ports:
       - "3310:3306"
     volumes:

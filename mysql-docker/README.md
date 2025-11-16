@@ -1,6 +1,6 @@
-# ✅ Proyecto - `todos_unah`
+# ✅ Proyecto - `api_publicaciones`
 
-Este proyecto configura un contenedor de **MySQL 8** usando Docker e incluye un script de inicialización con tablas para **usuarios** y **TODOs**, pensado para la elaboración de un **API RESTful** y la gestión de tareas.
+Este proyecto configura un contenedor de **MySQL 8** usando Docker e incluye un script de inicialización con tablas para **publicaciones** y **comentarios**, pensado para la elaboración de un **API RESTful**.
 
 ---
 
@@ -22,8 +22,7 @@ docker compose up -d
 
 Esto iniciará un contenedor MySQL con:
 
-- Base de datos inicial: `todos_unah`
-- Datos precargados (usuarios y TODOs de ejemplo)
+- Base de datos inicial: `publicaciones_db`
 - Tablas configuradas correctamente
 
 ---
@@ -32,17 +31,17 @@ Esto iniciará un contenedor MySQL con:
 
 Conéctate a la base de datos desde tu API, Workbench o cualquier cliente MySQL:
 
-| Parámetro       | Valor          |
-|-----------------|----------------|
-| Host            | `localhost`    |
-| Puerto          | `3307`         |
-| Base de datos   | `todos_unah`   |
-| Usuario         | `unah`         |
-| Contraseña      | `unah1234`     |
-| Usuario root    | `root`         |
-| Contraseña root | `unah1234`     |
+| Parámetro       | Valor                 |
+|-----------------|-----------------------|
+| Host            | `localhost`           |
+| Puerto          | `3310`                |
+| Base de datos   | `publicaciones_mysql` |
+| Usuario         | `unah`                |
+| Contraseña      | `unah1234`            |
+| Usuario root    | `root`                |
+| Contraseña root | `unah1234`            |
 
-> ⚠️ El puerto `3307` se mantiene para evitar conflictos con instalaciones locales de MySQL.
+> ⚠️ El puerto `3310` se mantiene para evitar conflictos con instalaciones locales de MySQL.
 
 ---
 
@@ -52,7 +51,7 @@ Conéctate a la base de datos desde tu API, Workbench o cualquier cliente MySQL:
 .
 ├── docker-compose.yml         # Configuración de servicios Docker
 ├── init/
-│   └── init.sql               # Script SQL para crear e insertar datos
+│   └── init.sql               # Script SQL para crear 
 ├── README.md
 ```
 

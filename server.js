@@ -1,7 +1,6 @@
 import express from 'express';
 import {loadEnvFile} from "node:process"
 import {errorHandler} from "./api/middlewares/errorHandler.js";
-import publicaciones from "./api/routes/publicaciones.route.js";
 import pubRouter from "./api/routes/publicaciones.route.js";
 
 
