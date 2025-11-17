@@ -32,7 +32,7 @@ Esto iniciará un contenedor MySQL con:
 Conéctate a la base de datos desde tu API, Workbench o cualquier cliente MySQL:
 
 | Parámetro       | Valor                 |
-|-----------------|-----------------------|
+| --------------- | --------------------- |
 | Host            | `localhost`           |
 | Puerto          | `3310`                |
 | Base de datos   | `publicaciones_mysql` |
@@ -43,6 +43,20 @@ Conéctate a la base de datos desde tu API, Workbench o cualquier cliente MySQL:
 
 > ⚠️ El puerto `3310` se mantiene para evitar conflictos con instalaciones locales de MySQL.
 
+> 🛡 Conexión desde clientes (DBeaver, Workbench, JDBC)
+
+---
+
+Si obtienes el error
+`Public Key Retrieval is not allowed`
+Solución (obligatorio añadir):
+
+En DBeaver → Driver Properties:
+| Parámetro | Valor |
+| ------------------------| ------------- |
+| useSSL | true |
+| allowPublicKeyRetrieval | true |
+
 ---
 
 ## 🗂 Estructura del proyecto
@@ -51,7 +65,7 @@ Conéctate a la base de datos desde tu API, Workbench o cualquier cliente MySQL:
 .
 ├── docker-compose.yml         # Configuración de servicios Docker
 ├── init/
-│   └── init.sql               # Script SQL para crear 
+│   └── init.sql               # Script SQL para crear
 ├── README.md
 ```
 
@@ -60,34 +74,36 @@ Conéctate a la base de datos desde tu API, Workbench o cualquier cliente MySQL:
 ## 🧱 Tablas creadas
 
 ### `users`
-| Campo                  | Tipo           | Descripción                           |
-|------------------------|----------------|----------------------------------------|
-| `id`                   | BINARY(16)     | UUID binario como PK                   |
-| `name`                 | VARCHAR(100)   | Nombre del usuario                     |
-| `email`                | VARCHAR(255)   | Correo electrónico (único)             |
-| `phone`                | VARCHAR(20)    | Número de teléfono                     |
-| `password_hash`        | VARCHAR(255)   | Contraseña en hash (bcrypt)            |
-| `must_change_password` | BOOLEAN        | Forzar cambio de contraseña            |
-| `created_at`           | TIMESTAMP      | Fecha de creación                      |
+
+| Campo                  | Tipo         | Descripción                 |
+| ---------------------- | ------------ | --------------------------- |
+| `id`                   | BINARY(16)   | UUID binario como PK        |
+| `name`                 | VARCHAR(100) | Nombre del usuario          |
+| `email`                | VARCHAR(255) | Correo electrónico (único)  |
+| `phone`                | VARCHAR(20)  | Número de teléfono          |
+| `password_hash`        | VARCHAR(255) | Contraseña en hash (bcrypt) |
+| `must_change_password` | BOOLEAN      | Forzar cambio de contraseña |
+| `created_at`           | TIMESTAMP    | Fecha de creación           |
 
 ---
 
 ### `todos`
-| Campo        | Tipo         | Descripción                                           |
-|--------------|--------------|-------------------------------------------------------|
-| `id`         | CHAR(36)     | UUID como texto (ej. `UUID()`)                        |
-| `title`      | VARCHAR(255) | Título de la tarea                                    |
-| `description`| TEXT         | Descripción / detalles                                |
-| `completed`  | BOOLEAN      | Indica si la tarea está completada (DEFAULT FALSE)    |
-| `user_id`    | BINARY(16)   | (Opcional) FK a `users.id`; puede ser NULL           |
-| `created_at` | TIMESTAMP    | Fecha de creación                                     |
 
+| Campo         | Tipo         | Descripción                                        |
+| ------------- | ------------ | -------------------------------------------------- |
+| `id`          | CHAR(36)     | UUID como texto (ej. `UUID()`)                     |
+| `title`       | VARCHAR(255) | Título de la tarea                                 |
+| `description` | TEXT         | Descripción / detalles                             |
+| `completed`   | BOOLEAN      | Indica si la tarea está completada (DEFAULT FALSE) |
+| `user_id`     | BINARY(16)   | (Opcional) FK a `users.id`; puede ser NULL         |
+| `created_at`  | TIMESTAMP    | Fecha de creación                                  |
 
 ---
 
 ## 🔍 Consultas útiles
 
 ### Ver todos los TODOs (con información de usuario si existe)
+
 ```sql
 SELECT
   t.id AS todo_id,
@@ -103,6 +119,7 @@ LEFT JOIN users u ON u.id = t.user_id;
 ```
 
 ### Ver TODOs sin usuario asignado
+
 ```sql
 SELECT id, title, description, completed, created_at
 FROM todos
@@ -110,6 +127,7 @@ WHERE user_id IS NULL;
 ```
 
 ### Ver TODOs de un usuario (por UUID legible)
+
 ```sql
 SELECT
   t.id, t.title, t.description, t.completed, t.created_at
@@ -119,6 +137,7 @@ WHERE BIN_TO_UUID(u.id) = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
 ```
 
 ### Marcar un TODO como completado
+
 ```sql
 UPDATE todos
 SET completed = TRUE
@@ -126,12 +145,14 @@ WHERE id = 'uuid-del-todo';
 ```
 
 ### Insertar un TODO desde SQL (sin usuario)
+
 ```sql
 INSERT INTO todos (id, title, description, completed, user_id)
 VALUES (UUID(), 'Título de ejemplo', 'Descripción...', FALSE, NULL);
 ```
 
 ### Insertar un TODO desde SQL (con usuario)
+
 ```sql
 -- asumiendo que @user_bin_id ya contiene UUID_TO_BIN(...) del usuario
 INSERT INTO todos (id, title, description, completed, user_id)

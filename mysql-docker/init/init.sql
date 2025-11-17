@@ -36,3 +36,10 @@ VALUES (@user_bin_id,
   '1234'
 );
 
+INSERT INTO usuarios (id, name, email, phone, password_hash)
+VALUES (@user_bin_id2,
+  'Jefferson Castro',
+  'jefferson.castro@unah.hn',
+  '94331368',
+  '1234'  -- TODO: usa hash real (bcrypt/argon2) en producción
+);
