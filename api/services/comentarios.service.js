@@ -1,5 +1,5 @@
 // src/services/ComentariosService.js
-import { pool } from "../db.js";
+import mysqlPool from "../config/db/mysql_db.js";
 import { sanitize } from "../utils/sanitize.js";
 import { randomUUID } from "crypto";
 

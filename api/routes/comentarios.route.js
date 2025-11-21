@@ -8,7 +8,7 @@ const routerComentarios = Router();
  * Lista todos los comentarios de una publicación
  * Pública (sin auth)
  */
-router.get(
+routerComentarios.get(
   "/api/publicaciones/:publicacionId/comentarios",
   ComentariosController.listar
 );
@@ -18,9 +18,8 @@ router.get(
  * Crea un comentario en una publicación
  * Protegida (requiere JWT)
  */
-router.post(
+routerComentarios.post(
   "/api/publicaciones/:publicacionId/comentarios",
-  isAuth,
   ComentariosController.crear
 );
 
@@ -29,9 +28,9 @@ router.post(
  * Actualiza un comentario
  * Protegida (solo autor)
  */
-router.put(
+routerComentarios.put(
   "/api/comentarios/:comentarioId",
-  isAuth,
+
   ComentariosController.actualizar
 );
 
@@ -40,9 +39,9 @@ router.put(
  * Elimina un comentario
  * Protegida (solo autor)
  */
-router.delete(
+routerComentarios.delete(
   "/api/comentarios/:comentarioId",
-  isAuth,
+
   ComentariosController.eliminar
 );
 
