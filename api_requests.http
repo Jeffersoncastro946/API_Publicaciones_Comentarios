@@ -1,13 +1,13 @@
 ### GET Ruta inicial de la API
-GET http://localhost:8180/api/
+GET http://localhost:3000/api/
 
 //Rutas de publicaciones
 ### GET Obtener todas las publicaciones
-GET http://localhost:8180/api/publicaciones
+GET http://localhost:3000/api/publicaciones
 
 ### GET Obtener una publicación por ID
 @postID=a6093bc3-c29e-11f0-b0db-6e0506219b55
-GET http://localhost:8180/api/publicaciones/{{postID}}
+GET http://localhost:3000/api/publicaciones/{{postID}}
 
 ### POST Crear una nueva publicación
 @userID=22580be7-c28b-11f0-bb93-6e0506219b55
@@ -32,3 +32,10 @@ Content-Type: application/json
 
 ### DELETE Eliminar una publicación por ID
 DELETE http://localhost:8180/api/publicaciones/{{postID}}
+
+
+### Ruta comentarios
+### GET Obtener todos los comentarios
+###  GET /api/publicaciones/:publicacionId/comentarios
+@postID=4ce9a4e2-c697-11f0-96ca-9ac99448b434
+GET http://localhost:3000/api/publicaciones/{{postID}}/comentarios
