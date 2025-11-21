@@ -1,19 +1,24 @@
-import {createPool} from "mysql2/promise"
-import {loadEnvFile} from "node:process";
-loadEnvFile();
+import { createPool } from 'mysql2/promise'
+import { loadEnvFile } from 'node:process'
 
-if(!process.env) throw new Error("Ocurrió un error al cargar el .env para la DB");
+loadEnvFile()
 
-const mysqlPool = createPool({
-    host: process.env.MYSQL_HOST,
-    port: process.env.MYSQL_PORT,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
-    namedPlaceholders:true,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+if (!process.env.MYSQL_HOST) {
+  throw new Error('❌ Error: No se pudo cargar el .env para la DB')
+}
+
+const pool = createPool({
+  host: process.env.MYSQL_HOST,
+  port: process.env.MYSQL_PORT,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
+  namedPlaceholders: true,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 })
 
-export default mysqlPool
+export { pool }
+
+export default pool
