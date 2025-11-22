@@ -82,6 +82,29 @@ export class ComentariosService {
     return comentario;
   }
 
+  // TODO ESTO DEBE SER CUANDO ESTE EL TOKEN
+  //   static async crear(req, res) {
+  //   try {
+  //     const { publicacionId } = req.params;
+  //     const { contenido } = req.body;
+  //     const userUuid = req.user.id; //  SOLO del token
+
+  //     if (!contenido || typeof contenido !== "string" || !contenido.trim()) {
+  //       return res.status(400).json({ message: "El contenido no puede estar vacío" });
+  //     }
+
+  //     const nuevo = await ComentariosService.crearComentario({
+  //       contenido,
+  //       userUuid,
+  //       publicacionUuid: publicacionId,
+  //     });
+
+  //     res.status(201).json(nuevo);
+  //   } catch (err) {
+  //     res.status(err.statusCode || 500).json({ message: err.message });
+  //   }
+  // }
+
   // ============================================
   //  Actualizar comentario (solo autor)
   // ============================================
