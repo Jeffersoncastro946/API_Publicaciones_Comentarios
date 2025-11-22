@@ -1,13 +1,35 @@
-### RUTA INICIAL DE LA API
-GET http://localhost:3000/api/
+########################################
+# VARIABLES GLOBALES
+########################################
+@port=3000
+@host=localhost
+@baseUrl=http://{{host}}:{{port}}
+
+# IDs de prueba (ajusta según tu BD)
+@userID=5c8f57c9-c3bd-11f0-9d03-da3f5c10cf47
+@postID=4ce9a4e2-c697-11f0-96ca-9ac99448b434
+@comentarioID=d2da835f-2098-473c-b16e-e089b09989ae
+
+########################################
+# RUTA RAÍZ API
+########################################
+### GET Ruta inicial de la API
+GET {{baseUrl}}/api/
 
 
-########################
-#        AUTH          #
-########################
+########################################
+# PUBLICACIONES
+########################################
 
-### REGISTER - Crear usuario
-POST http://localhost:3000/api/auth/register
+### GET Obtener todas las publicaciones
+GET {{baseUrl}}/api/publicaciones
+
+### GET Obtener una publicación por ID
+GET {{baseUrl}}/api/publicaciones/{{postID}}
+
+### POST Crear una nueva publicación
+# Nota: mientras no uses JWT, mandas user_id en el body.
+POST {{baseUrl}}/api/publicaciones
 Content-Type: application/json
 
 {
@@ -17,8 +39,8 @@ Content-Type: application/json
   "password": "12345678"
 }
 
-### LOGIN - Obtener token JWT
-POST http://localhost:3000/api/auth/login
+### PUT Actualizar una publicación por ID
+PUT {{baseUrl}}/api/publicaciones/{{postID}}
 Content-Type: application/json
 
 {
@@ -26,43 +48,43 @@ Content-Type: application/json
   "password": "12345678"
 }
 
+### DELETE Eliminar una publicación por ID
+DELETE {{baseUrl}}/api/publicaciones/{{postID}}
 
-########################
-#    PUBLICACIONES     #
-########################
 
-# 👉 Después de hacer LOGIN, copia el token que te devuelve
-# y pegalo en la variable @token de abajo
+########################################
+# COMENTARIOS
+########################################
 
-@token = Pega_aqui_el_token_del_login
+### GET Obtener todos los comentarios de una publicación
+# GET /api/publicaciones/:publicacionId/comentarios
+GET {{baseUrl}}/api/publicaciones/{{postID}}/comentarios
 
-### GET Obtener todas las publicaciones (PÚBLICO)
-GET http://localhost:3000/api/publicaciones
-
-### GET Obtener una publicación por ID (PÚBLICO)
-@postID = a6093bc3-c29e-11f0-b0db-6e0506219b55
-GET http://localhost:3000/api/publicaciones/{{postID}}
-
-### POST Crear una nueva publicación (PROTEGIDO)
-POST http://localhost:3000/api/publicaciones
+### POST Crear un nuevo comentario en una publicación
+# POST /api/publicaciones/:publicacionId/comentarios
+POST {{baseUrl}}/api/publicaciones/{{postID}}/comentarios
 Content-Type: application/json
-Authorization: Bearer {{token}}
 
 {
-  "title": "Publicación desde auth",
-  "description": "Probando creación con token"
+  "contenido": "Este es un comentario desde la API versión 2",
+  "user_id": "{{userID}}"
 }
 
-### PUT Actualizar una publicación por ID (PROTEGIDO)
-PUT http://localhost:3000/api/publicaciones/{{postID}}
+### PUT Actualizar un comentario por ID
+# PUT /api/comentarios/:comentarioId
+PUT {{baseUrl}}/api/comentarios/{{comentarioID}}
 Content-Type: application/json
-Authorization: Bearer {{token}}
 
 {
-  "title": "Publicación Actualizada desde auth",
-  "description": "Probando actualización con token"
+  "contenido": "Este es un comentario actualizado desde la API",
+  "user_id": "{{userID}}"
 }
 
-### DELETE Eliminar una publicación por ID (PROTEGIDO)
-DELETE http://localhost:3000/api/publicaciones/{{postID}}
-Authorization: Bearer {{token}}
+### DELETE Eliminar un comentario por ID
+# DELETE /api/comentarios/:comentarioId
+DELETE {{baseUrl}}/api/comentarios/{{comentarioID}}
+Content-Type: application/json
+
+{
+  "user_id": "{{userID}}"
+}
