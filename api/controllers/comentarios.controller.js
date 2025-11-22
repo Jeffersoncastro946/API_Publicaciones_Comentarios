@@ -16,9 +16,13 @@ export class ComentariosController {
   static async crear(req, res) {
     try {
       const { publicacionId } = req.params;
-      const { contenido } = req.body;
-      const userUuid = req.user.id;
-
+      const { contenido, user_id } = req.body;
+      const userUuid = req.user?.id ?? user_id;
+      if (!userUuid) {
+        return res
+          .status(400)
+          .json({ message: "user_id requerido si no hay JWT" });
+      }
       const nuevo = await ComentariosService.crearComentario({
         contenido,
         userUuid,

@@ -39,3 +39,15 @@ DELETE http://localhost:8180/api/publicaciones/{{postID}}
 ###  GET /api/publicaciones/:publicacionId/comentarios
 @postID=4ce9a4e2-c697-11f0-96ca-9ac99448b434
 GET http://localhost:3000/api/publicaciones/{{postID}}/comentarios
+
+### POST Crear un nuevo comentario
+@userID=5c8f57c9-c3bd-11f0-9d03-da3f5c10cf47
+@postID=4ce9a4e2-c697-11f0-96ca-9ac99448b434
+POST http://localhost:3000/api/publicaciones/{{postID}}/comentarios
+Content-Type: application/json
+
+{
+   "contenido": "Este es un comentario desde la API version 2",
+  "user_id": "{{userID}}"
+  
+}
