@@ -38,8 +38,13 @@ export class ComentariosController {
   static async actualizar(req, res) {
     try {
       const { comentarioId } = req.params;
-      const { contenido } = req.body;
-      const userUuid = req.user.id;
+      const { contenido, user_id } = req.body;
+      const userUuid = req.user?.id ?? user_id;
+      if (!userUuid) {
+        return res
+          .status(400)
+          .json({ message: "user_id requerido si no hay JWT" });
+      }
 
       const actualizado = await ComentariosService.actualizarComentario({
         comentarioUuid: comentarioId,
@@ -56,7 +61,13 @@ export class ComentariosController {
   static async eliminar(req, res) {
     try {
       const { comentarioId } = req.params;
-      const userUuid = req.user.id;
+      const { user_id } = req.body;
+      const userUuid = req.user?.id ?? user_id;
+      if (!userUuid) {
+        return res
+          .status(400)
+          .json({ message: "user_id requerido si no hay JWT" });
+      }
 
       await ComentariosService.eliminarComentario({
         comentarioUuid: comentarioId,
