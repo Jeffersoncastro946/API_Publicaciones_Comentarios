@@ -1,69 +1,82 @@
-DROP TABLE IF EXISTS comentarios;
-DROP TABLE IF EXISTS publicaciones;
-DROP TABLE IF EXISTS users;
 
--- Tabla users (coincide con tu UsersService + Auth)
-CREATE TABLE users (
-  id CHAR(36) PRIMARY KEY,
+
+-- Eliminar tablas si existieran (útil para desarrollo)
+DROP TABLE IF EXISTS publicaciones;
+DROP TABLE IF EXISTS comentarios;
+DROP TABLE IF EXISTS usuarios;
+
+-- Crear tabla de usuarios con UUID en BINARY(16)
+CREATE TABLE usuarios (
+  id BINARY(16) PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
-  email VARCHAR(150) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
   phone VARCHAR(20),
   password_hash VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla publicaciones
+-- Crear tabla de publicaciones
 CREATE TABLE publicaciones (
-  id CHAR(36) PRIMARY KEY,
+  id BINARY(16) PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
-  description TEXT NOT NULL,
-  user_id CHAR(36) NOT NULL,
+  description TEXT,
+  user_id BINARY(16),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE SET NULL
 );
 
--- Tabla comentarios
+-- Crear tabla de comentarios
 CREATE TABLE comentarios (
-  id CHAR(36) PRIMARY KEY,
+  id BINARY(16) PRIMARY KEY,
   contenido TEXT NOT NULL,
-  user_id CHAR(36) NOT NULL,
-  publicacion_id CHAR(36) NOT NULL,
+  user_id BINARY(16) NOT NULL,
+  publicacion_id BINARY(16) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (publicacion_id) REFERENCES publicaciones(id)
-);
+  CONSTRAINT fk_comentarios_usuarios
+    FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  CONSTRAINT fk_comentarios_publicaciones
+    FOREIGN KEY (publicacion_id) REFERENCES publicaciones(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
 
--- OPCIONAL: insertar datos de ejemplo
-INSERT INTO users (id, name, email, phone, password_hash)
-VALUES (
-  UUID(),
+-- Insertar usuario de ejemplo
+SET @user_bin_id = UUID_TO_BIN(UUID());
+
+INSERT INTO usuarios (id, name, email, phone, password_hash)
+VALUES (@user_bin_id,
   'Andres Leiva',
   'andres.leiva@unah.hn',
   '+50499999999',
-  '$argon2id$v=19$m=65536,t=3,p=4$xxxxxxxxxxxx' -- reemplazar por hash real si quieren
+  '1234'
 );
 
-INSERT INTO users (id, name, email, phone, password_hash)
-VALUES (
-  UUID(),
+INSERT INTO usuarios (id, name, email, phone, password_hash)
+VALUES (@user_bin_id2,
   'Jefferson Castro',
   'jefferson.castro@unah.hn',
   '94331368',
-  '$argon2id$v=19$m=65536,t=3,p=4$xxxxxxxxxxxx'
+  '1234'  -- TODO: usa hash real (bcrypt/argon2) en producción
 );
+
+-- ==========================
+--  Publicación de ejemplo
+-- ==========================
+SET @pub_bin_id = UUID_TO_BIN(UUID());
 
 INSERT INTO publicaciones (id, title, description, user_id)
 VALUES (
-  UUID(),
-  'Publicación de ejemplo',
-  'Esta es una publicación inicial.',
-  (SELECT id FROM users LIMIT 1)
+  @pub_bin_id,
+  'Primera publicación de ejemplo',
+  'Esta es una publicación inicial para probar el módulo de comentarios.',
+  @user_bin_id -- autor: Andrés
 );
 
+-- ==========================
+--  Comentario de ejemplo
+-- ==========================
 INSERT INTO comentarios (id, contenido, user_id, publicacion_id)
 VALUES (
-  UUID(),
-  'Comentario de ejemplo.',
-  (SELECT id FROM users LIMIT 1 OFFSET 1),
-  (SELECT id FROM publicaciones LIMIT 1)
+  UUID_TO_BIN(UUID()),
+  'Este es un comentario de prueba en la publicación de ejemplo.',
+  @user_bin_id2, -- Jefferson comenta
+  @pub_bin_id
 );
