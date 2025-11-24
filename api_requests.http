@@ -1,21 +1,51 @@
 ########################################
 # VARIABLES GLOBALES
 ########################################
-@port=3000
+@port=8180
 @host=localhost
 @baseUrl=http://{{host}}:{{port}}
 
 # IDs de prueba (ajusta según tu BD)
 @userID=5c8f57c9-c3bd-11f0-9d03-da3f5c10cf47
-@postID=4ce9a4e2-c697-11f0-96ca-9ac99448b434
-@comentarioID=d2da835f-2098-473c-b16e-e089b09989ae
+@userID2=7a5e4fe8-c951-11f0-b0e7-167deec9f809
 
-########################################
-# RUTA RAÍZ API
-########################################
+@postID=4aba4769-c963-11f0-af25-a6afa9236dc4
+@comentarioID=2108c26d-9f02-4182-ac1f-f06e89fc94ba
+@comentarioID2=5dda3ab7-ef1b-441f-b4c1-34b6f1acfd29
+//########################################
+//# RUTA RAÍZ API
+//#######################################
+
 ### GET Ruta inicial de la API
 GET {{baseUrl}}/api/
 
+//########################################
+//# Autenticación de Usuarios
+//########################################
+
+
+### POST Registro de usuario
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "{{$random.name.fullName}}",
+  "email": "{{$random.email}}",
+  "phone": "99887766",
+  "password": "${{$random.internet.password(8)}}"
+}
+
+### POST Login de usuario
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "a@gmail.com",
+    "password": "12345678"
+}
+
+###
+@jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFmNDU5ZjFiLWM5NDctMTFmMC1iMGU3LTE2N2RlZWM5ZjgwOSIsImVtYWlsIjoiYUBnbWFpbC5jb20iLCJpYXQiOjE3NjQwMTExMjYsImV4cCI6MTc2NDAxODMyNn0.jg2WjrDFq4ln1G6c2Xh3ZnWHZZf8iiuwGmW69WfkTTo
 
 ########################################
 # PUBLICACIONES
@@ -24,33 +54,34 @@ GET {{baseUrl}}/api/
 ### GET Obtener todas las publicaciones
 GET {{baseUrl}}/api/publicaciones
 
+
 ### GET Obtener una publicación por ID
 GET {{baseUrl}}/api/publicaciones/{{postID}}
 
-### POST Crear una nueva publicación
-# Nota: mientras no uses JWT, mandas user_id en el body.
+### POST Crear una nueva publicación716dda3c-c94b-11f0-b0e7-167deec9f809
 POST {{baseUrl}}/api/publicaciones
 Content-Type: application/json
+Authorization: Bearer {{jwt}}
 
 {
-  "name": "Cesar",
-  "email": "cesar@test.com",
-  "phone": "98765432",
-  "password": "12345678"
+  "title": "Publicación #{{$random.integer()}}",
+  "description": "{{$random.lorem.sentence}}"
 }
 
 ### PUT Actualizar una publicación por ID
 PUT {{baseUrl}}/api/publicaciones/{{postID}}
 Content-Type: application/json
+Authorization: Bearer {{jwt}}
 
 {
-  "email": "cesar@test.com",
-  "password": "12345678"
+  "title": "Publicación #{{$random.integer()}} actualizada 2",
+  "description": "{{$random.lorem.sentence}}"
 }
 
 ### DELETE Eliminar una publicación por ID
 DELETE {{baseUrl}}/api/publicaciones/{{postID}}
-
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
 
 ########################################
 # COMENTARIOS
@@ -64,9 +95,10 @@ GET {{baseUrl}}/api/publicaciones/{{postID}}/comentarios
 # POST /api/publicaciones/:publicacionId/comentarios
 POST {{baseUrl}}/api/publicaciones/{{postID}}/comentarios
 Content-Type: application/json
+Authorization: Bearer {{jwt}}
 
 {
-  "contenido": "Este es un comentario desde la API versión 2",
+  "contenido": "Este es el comentario #{{$random.integer()}}",
   "user_id": "{{userID}}"
 }
 
@@ -74,17 +106,15 @@ Content-Type: application/json
 # PUT /api/comentarios/:comentarioId
 PUT {{baseUrl}}/api/comentarios/{{comentarioID}}
 Content-Type: application/json
+Authorization: Bearer {{jwt}}
 
 {
-  "contenido": "Este es un comentario actualizado desde la API",
-  "user_id": "{{userID}}"
+  "contenido": "Este es un comentario actualizado desde la API"
 }
 
 ### DELETE Eliminar un comentario por ID
 # DELETE /api/comentarios/:comentarioId
 DELETE {{baseUrl}}/api/comentarios/{{comentarioID}}
 Content-Type: application/json
+Authorization:Bearer {{jwt}}
 
-{
-  "user_id": "{{userID}}"
-}

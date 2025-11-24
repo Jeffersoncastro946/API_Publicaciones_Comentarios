@@ -6,7 +6,6 @@ export class ComentariosController {
   static async listar(req, res) {
     try {
       const { publicacionId } = req.params;
-
       const data = await ComentariosService.listarComentariosPorPublicacion(
         publicacionId
       );
@@ -27,7 +26,8 @@ export class ComentariosController {
     try {
       const { publicacionId } = req.params;
       const { contenido } = req.body;
-
+      console.log("publicacionId:", publicacionId);
+      console.log("contenido:", contenido);
       const userUuid = req.user?.id;
       if (!userUuid) {
         return res

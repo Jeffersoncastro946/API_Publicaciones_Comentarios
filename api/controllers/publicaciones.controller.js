@@ -30,6 +30,12 @@ export const  getPostByID = async (req, res) => {
 }
 
 export const createPost = async (req, res) => {
+    const {id:user_id}= req.user;
+    if (!user_id){
+        return response.clientError({res, code:401, message:"No autenticado"});
+    }
+    req.body.user_id = user_id;
+
     const {success, error, data} = postModel.safeParse(req.body);
     if (!success) {
         return response.clientError({res, message: error.issues});
@@ -45,11 +51,24 @@ export const createPost = async (req, res) => {
 
 export const updatePost = async (req, res) => {
     const postID = req.params.id;
+
+    const {id:user_id}= req.user;
+    if (!user_id){
+        return response.clientError({res, code:401, message:"No autenticado"});
+    }
+    req.body.user_id = user_id;
+
     const {success, error,
         data} = postModel.safeParse(req.body);
     if (!success) {
         return response.clientError({res,
             message: error.issues});
+    }
+
+    if(!await postsService.verifyPostOwner(postID, user_id)){
+        return response.clientError({res,
+            code:403,
+            message: "No tienes permiso para modificar este recurso"});
     }
     try {
         const {affectedRows} = await postsService.updatePost(postID, data);
@@ -67,6 +86,17 @@ export const updatePost = async (req, res) => {
 
 export const deletePost = async (req, res) => {
     const postID = req.params.id;
+
+    const {id:user_id}= req.user;
+    if (!user_id){
+        return response.clientError({res, code:401, message:"No autenticado"});
+    }
+
+    if(!await postsService.verifyPostOwner(postID, user_id)){
+        return response.clientError({res,
+            code:403,
+            message: "No tienes permiso para eliminar este recurso"});
+    }
     try {
         const {affectedRows} = await postsService.deletePost(postID);
         if(affectedRows === 0)

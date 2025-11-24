@@ -23,8 +23,8 @@ app.use(express.json());
 
 //Rutas
 app.use("/auth", authRouter);
+app.use("/api/",routerComentarios);
 app.use("/api/publicaciones", pubRouter);
-app.use(routerComentarios);
 app.use("/api/", (req, res) => {
   return res.send("Bienvenido al proyecto de publicaciones y comentarios");
 });

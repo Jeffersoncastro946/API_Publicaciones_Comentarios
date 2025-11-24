@@ -53,6 +53,16 @@ export class PostsService{
         return result;
     }
 
+    static async verifyPostOwner(postID, userID){
+        const [result] = await pool.query(`
+        SELECT COUNT(*) AS count
+        FROM publicaciones
+        WHERE id = UUID_TO_BIN(:postID)
+          AND user_id = UUID_TO_BIN(:userID);
+        `, {postID, userID});
+        return result[0].count > 0;
+    }
+
     static async deletePost(postID){
         const [result] = await pool.query(`
         DELETE FROM publicaciones
