@@ -1,64 +1,67 @@
 // api/middlewares/verifyToken.js
-import jwt from 'jsonwebtoken'
-import { response } from '../utils/response.js'
+import jwt from 'jsonwebtoken';
+import { response } from '../utils/response.js';
 
-const JWT_SECRET = process.env.JWT_SECRET
+const JWT_SECRET = process.env.JWT_SECRET;
 
 if (!JWT_SECRET) {
-  console.error('⚠️ No se ha definido JWT_SECRET en el .env')
+  console.error("No se ha definido JWT_SECRET en el archivo .env");
 }
 
-/**
- * Middleware que verifica el token JWT enviado en el header Authorization
- * Formato esperado: Authorization: Bearer <token>
- */
 export const verifyToken = (req, res, next) => {
-  // Puede venir como "authorization" o "Authorization"
-  const authHeader = req.headers.authorization || req.headers.Authorization
+  // El token puede venir como "authorization" o "Authorization"
+  const authHeader = req.headers.authorization || req.headers.Authorization;
 
+  // No se envió ningún token
   if (!authHeader) {
     return response.clientError({
       res,
       code: 401,
-      message: 'No se envió el token de autenticación'
-    })
+      message: "No se envió el token de autenticación"
+    });
   }
 
-  const [scheme, token] = authHeader.split(' ')
+  // Aseguramos que sea string antes de dividir
+  const headerString = String(authHeader).trim();
+  const [scheme, token] = headerString.split(" ");
 
-  if (scheme !== 'Bearer' || !token) {
+  // El formato debe ser: Bearer <token>
+  if (scheme !== "Bearer" || !token) {
     return response.clientError({
       res,
       code: 401,
-      message: 'Formato de token inválido. Usa: Bearer <token>'
-    })
+      message: "Formato de token inválido. Usa: Bearer <token>"
+    });
   }
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET)
+    // Verificar firma y expiración
+    const payload = jwt.verify(token, JWT_SECRET);
 
-    // Guardamos info del usuario autenticado en la request
+    // Guardamos los datos del usuario autenticado
     req.user = {
       id: payload.id,
       email: payload.email
-    }
+    };
 
-    return next()
+    return next();
   } catch (err) {
-    console.error('Error al verificar token:', err)
+    console.error("Error al verificar token:", err);
 
-    if (err.name === 'TokenExpiredError') {
+    // Token expirado
+    if (err.name === "TokenExpiredError") {
       return response.clientError({
         res,
         code: 401,
-        message: 'El token ha expirado, vuelve a iniciar sesión'
-      })
+        message: "El token ha expirado, vuelve a iniciar sesión"
+      });
     }
 
+    // Token inválido o alterado
     return response.clientError({
       res,
       code: 401,
-      message: 'Token inválido'
-    })
+      message: "Token inválido"
+    });
   }
-}
+};
