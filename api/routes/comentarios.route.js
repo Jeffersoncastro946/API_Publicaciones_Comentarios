@@ -1,47 +1,45 @@
 import { Router } from "express";
 import { ComentariosController } from "../controllers/comentarios.controller.js";
+import { verifyToken } from "../middlewares/verifyToken.js";
 
 const routerComentarios = Router();
 
 /**
  * GET /api/publicaciones/:publicacionId/comentarios
- * Lista todos los comentarios de una publicación
- * Pública (sin auth)
+ * Pública: lista comentarios de una publicación
  */
 routerComentarios.get(
-  "/api/publicaciones/:publicacionId/comentarios",
+  "/publicaciones/:publicacionId/comentarios",
   ComentariosController.listar
 );
 
 /**
  * POST /api/publicaciones/:publicacionId/comentarios
- * Crea un comentario en una publicación
- * Protegida (requiere JWT)
+ * Protegida: requiere JWT
  */
 routerComentarios.post(
-  "/api/publicaciones/:publicacionId/comentarios",
+  "/publicaciones/:publicacionId/comentarios",
+  verifyToken,
   ComentariosController.crear
 );
 
 /**
  * PUT /api/comentarios/:comentarioId
- * Actualiza un comentario
- * Protegida (solo autor)
+ * Protegida: requiere JWT (solo autor)
  */
 routerComentarios.put(
-  "/api/comentarios/:comentarioId",
-
+  "/comentarios/:comentarioId",
+  verifyToken,
   ComentariosController.actualizar
 );
 
 /**
  * DELETE /api/comentarios/:comentarioId
- * Elimina un comentario
- * Protegida (solo autor)
+ * Protegida: requiere JWT (solo autor)
  */
 routerComentarios.delete(
-  "/api/comentarios/:comentarioId",
-
+  "/comentarios/:comentarioId",
+  verifyToken,
   ComentariosController.eliminar
 );
 
