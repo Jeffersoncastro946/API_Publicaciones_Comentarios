@@ -8,7 +8,9 @@ export class PostsService{
                 title, 
                 description, 
                 BIN_TO_UUID(user_id) AS user_id,
-                created_at FROM publicaciones
+                created_at 
+            FROM publicaciones
+            ORDER BY created_at DESC
             `);
         return result;
     }

@@ -1,5 +1,5 @@
 import express from "express";
-import { loadEnvFile } from "node:process";
+import dotenv from "dotenv";
 import { es } from "zod/locales";
 import { config } from "zod";
 import { errorHandler } from "./api/middlewares/errorHandler.js";
@@ -8,8 +8,8 @@ import authRouter from "./api/routes/auth.route.js";
 import routerComentarios from "./api/routes/comentarios.route.js";
 
 config(es());
-loadEnvFile();
 
+dotenv.config();
 const app = express();
 
 if (!process.env.PORT) {
