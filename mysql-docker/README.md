@@ -1,6 +1,6 @@
 # ✅ Proyecto - `api_publicaciones`
 
-Este proyecto configura un contenedor de **MySQL 8** usando Docker e incluye un script de inicialización con tablas para **publicaciones** y **comentarios**, pensado para la elaboración de un **API RESTful**.
+Este proyecto configura un contenedor de **MySQL 8** usando Docker e incluye un script de inicialización con tablas para **publicaciones** y **comentarios** con **Autenticaciones** , pensado para la elaboración de un **API RESTful**.
 
 ---
 
@@ -31,15 +31,15 @@ Esto iniciará un contenedor MySQL con:
 
 Conéctate a la base de datos desde tu API, Workbench o cualquier cliente MySQL:
 
-| Parámetro       | Valor                 |
-| --------------- | --------------------- |
-| Host            | `localhost`           |
-| Puerto          | `3310`                |
-| Base de datos   | `publicaciones_mysql` |
-| Usuario         | `unah`                |
-| Contraseña      | `unah1234`            |
-| Usuario root    | `root`                |
-| Contraseña root | `unah1234`            |
+| Parámetro       | Valor                     |
+| --------------- | ------------------------- |
+| Host            | `localhost` o `127.0.0.1` |
+| Puerto          | `3310`                    |
+| Base de datos   | `publicaciones_mysql`     |
+| Usuario         | `unah`                    |
+| Contraseña      | `unah1234`                |
+| Usuario root    | `root`                    |
+| Contraseña root | `unah1234`                |
 
 > ⚠️ El puerto `3310` se mantiene para evitar conflictos con instalaciones locales de MySQL.
 
@@ -71,90 +71,55 @@ En DBeaver → Driver Properties:
 
 ---
 
-## 🧱 Tablas creadas
+# 🧱 Tablas creadas automáticamente
 
-### `users`
+## Tabla `usuarios`
 
-| Campo                  | Tipo         | Descripción                 |
-| ---------------------- | ------------ | --------------------------- |
-| `id`                   | BINARY(16)   | UUID binario como PK        |
-| `name`                 | VARCHAR(100) | Nombre del usuario          |
-| `email`                | VARCHAR(255) | Correo electrónico (único)  |
-| `phone`                | VARCHAR(20)  | Número de teléfono          |
-| `password_hash`        | VARCHAR(255) | Contraseña en hash (bcrypt) |
-| `must_change_password` | BOOLEAN      | Forzar cambio de contraseña |
-| `created_at`           | TIMESTAMP    | Fecha de creación           |
+id (BINARY16), name, email, phone, password_hash, created_at
 
----
+## Tabla `publicaciones`
 
-### `todos`
+id, title, description, user_id, created_at
 
-| Campo         | Tipo         | Descripción                                        |
-| ------------- | ------------ | -------------------------------------------------- |
-| `id`          | CHAR(36)     | UUID como texto (ej. `UUID()`)                     |
-| `title`       | VARCHAR(255) | Título de la tarea                                 |
-| `description` | TEXT         | Descripción / detalles                             |
-| `completed`   | BOOLEAN      | Indica si la tarea está completada (DEFAULT FALSE) |
-| `user_id`     | BINARY(16)   | (Opcional) FK a `users.id`; puede ser NULL         |
-| `created_at`  | TIMESTAMP    | Fecha de creación                                  |
+## Tabla `comentarios`
+
+id, contenido, user_id, publicacion_id, created_at
 
 ---
 
-## 🔍 Consultas útiles
+# 📥 Datos de ejemplo incluidos
 
-### Ver todos los TODOs (con información de usuario si existe)
+Usuarios: Andres y Jefferson  
+Publicación: "Primera publicación de ejemplo"  
+Comentario: Jefferson comenta a Andres
 
-```sql
-SELECT
-  t.id AS todo_id,
-  t.title,
-  t.description,
-  t.completed,
-  t.created_at AS todo_created,
-  COALESCE(BIN_TO_UUID(u.id), NULL) AS user_uuid,
-  u.name AS user_name,
-  u.email AS user_email
-FROM todos t
-LEFT JOIN users u ON u.id = t.user_id;
-```
+---
 
-### Ver TODOs sin usuario asignado
+# 📌 Consultas SQL útiles
 
 ```sql
-SELECT id, title, description, completed, created_at
-FROM todos
-WHERE user_id IS NULL;
+SELECT BIN_TO_UUID(p.id) AS publicacion_id, p.title
+FROM publicaciones p;
 ```
 
-### Ver TODOs de un usuario (por UUID legible)
+---
 
-```sql
-SELECT
-  t.id, t.title, t.description, t.completed, t.created_at
-FROM todos t
-JOIN users u ON u.id = t.user_id
-WHERE BIN_TO_UUID(u.id) = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
+# 🧰 Node.js / Express
+
+```js
+const pool = createPool({
+  host: process.env.MYSQL_HOST,
+  port: process.env.MYSQL_PORT,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
+  namedPlaceholders: true,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 ```
 
-### Marcar un TODO como completado
+---
 
-```sql
-UPDATE todos
-SET completed = TRUE
-WHERE id = 'uuid-del-todo';
-```
-
-### Insertar un TODO desde SQL (sin usuario)
-
-```sql
-INSERT INTO todos (id, title, description, completed, user_id)
-VALUES (UUID(), 'Título de ejemplo', 'Descripción...', FALSE, NULL);
-```
-
-### Insertar un TODO desde SQL (con usuario)
-
-```sql
--- asumiendo que @user_bin_id ya contiene UUID_TO_BIN(...) del usuario
-INSERT INTO todos (id, title, description, completed, user_id)
-VALUES (UUID(), 'Tarea con usuario', 'Descripción...', FALSE, @user_bin_id);
-```
+# ✔ Proyecto listo
