@@ -1,4 +1,5 @@
-import pool from '../config/db/mysql_db.js'
+import pool from '../config/db/mysql_db.js';
+import { sanitize } from "../utils/sanitize.js";
 
 export class PostsService{
     static async getAllPosts(){
@@ -30,7 +31,10 @@ export class PostsService{
     }
 
     static async createPost(postData){
-        const {title, description, user_id} = postData;
+        let {title, description, user_id} = postData;
+        title = sanitize(title ?? "");
+        description = sanitize(description ?? "");
+
         const [result] = await pool.query(`
         INSERT INTO publicaciones (id, title, description, user_id, created_at)
         VALUES (
@@ -45,7 +49,10 @@ export class PostsService{
     }
 
     static async updatePost(postID, postData){
-        const {title, description} = postData;
+        let {title, description} = postData;
+        title = sanitize(title ?? "");
+        description = sanitize(description ?? "");
+
         const [result] = await pool.query(`
         UPDATE publicaciones
         SET title = :title,
