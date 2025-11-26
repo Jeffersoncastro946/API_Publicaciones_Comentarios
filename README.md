@@ -1,13 +1,20 @@
 # API de Publicaciones y comentarios
-Proyecto desarrollado con Node.js, Express y MySQL que permite gestionar publicaciones y comentarios de usuarios.
----
+
+## Proyecto desarrollado con Node.js, Express y MySQL que permite gestionar publicaciones y comentarios de usuarios.
 
 ## Tabla de contenidos
-[1-Características](#características)
 
-[2-Prerequisitos](#prerequisitos)
+1. [Características](#características)
+2. [Prerequisitos](#prerequisitos)
+3. [Instalación](#instalación)
+4. [Uso de Endpoints](#uso-de-endpoints)
+   - [Raíz](#raíz-de-la-api)
+   - [Autenticación](#autenticación)
+   - [Publicaciones](#publicaciones)
+   - [Comentarios](#comentarios)
+5. [Modelos de Datos](#modelos-de-datos)
+6. [Códigos de Error](#códigos-de-error)
 
-[3-Instalación](#instalación)
 ## Características
 
 - Autenticación con JWT
@@ -20,62 +27,92 @@ Proyecto desarrollado con Node.js, Express y MySQL que permite gestionar publica
 - Manejo centralizado de errores
 
 ## Prerequisitos
-Tener Node.js v21 o superior instalado 
+
+Tener Node.js v21 o superior instalado
+
 ```bash
 node -v
 ```
+
 Tener Docker instalado
+
 ```bash
 docker --version
 ```
+
 Tener Node Package Manager (npm)
+
 ```bash
 npm -v
 ```
+
 Tener Git instalado
+
 ```bash
 git --version
 ```
+
 ## Instalación
+
 1-Clonar el repositorio y navegar al directorio del proyecto
 
 ```bash
 git clone https://github.com/Jeffersoncastro946/API_Publicaciones_Comentarios.git
 ```
+
 ---
 
-2-Crear un archivo `.env` en la raíz del proyecto con las variables que se encuentran en el archivo `.env.example` y ajustarlas según tu configuración local.
----
-3-Entrar a la carpeta de `mysql-docker` y ejecutar Docker Compose para levantar el contenedor de MySQL
+## 2. Crear archivo `.env`
+
+en la raíz del proyecto con las variables que se encuentran en el archivo `.env.example` y ajustarlas según tu configuración local.
+
+## 3. Levantar MySQL con Docker
+
+Entrar a la carpeta de `mysql-docker` y ejecutar Docker Compose para levantar el contenedor de MySQL
 
 ```bash
 cd mysql-docker
 docker-compose up -d
 ```
+
 ---
-4-Volver a la raíz del proyecto e instalar las dependencias
+
+## 4. Instalar dependencias
+
+Volver a la raíz del proyecto e instalar las dependencias
 
 ```bash
 cd ..
 npm install
 ```
+
 ---
-5-Iniciar el servidor
+
+## 5. Iniciar servidor
+
 ```bash
 npm run dev
 ```
+
 ---
-6-La API estará disponible en `http://localhost:{PUERTO}/api/`
+
+## 6. URL base
+
+La API estará disponible en `http://localhost:{PUERTO}/api/`
 
 ## Uso de endpoints
+
 ## Raíz de la API
 
 `GET /api/`: Endpoint raíz de la API con la bienvenida al proyecto (no requiere autenticación).
+
 ## Autenticación
+
 ### Registro de usuario
+
 `POST /auth/register`: Registra un nuevo usuario (no requiere autenticación).
 
-```json
+````json
 Content-Type: application/json
 
 {
@@ -85,4 +122,158 @@ Content-Type: application/json
 "password":
 }```
 
- 
+````
+
+---
+
+## Login de Usuario
+
+```http
+POST /auth/login
+Content-Type: application/json
+```
+
+```json
+{
+  "email": "juan@example.com",
+  "password": "12345678"
+}
+```
+
+Token:
+
+```http
+Authorization: Bearer <token>
+```
+
+---
+
+## Publicaciones
+
+---
+
+## Crear publicación
+
+```http
+POST /api/publicaciones
+Authorization: Bearer {token}
+Content-Type: application/json
+```
+
+```json
+{
+  "title": "Nueva publicación",
+  "description": "Contenido..."
+}
+```
+
+## Listar publicaciones
+
+```http
+GET /api/publicaciones
+```
+
+## Obtener por ID
+
+```http
+GET /api/publicaciones/{id}
+```
+
+## Actualizar
+
+```http
+PUT /api/publicaciones/{id}
+Authorization: Bearer {token}
+```
+
+## Eliminar
+
+```http
+DELETE /api/publicaciones/{id}
+Authorization: Bearer {token}
+```
+
+---
+
+## Comentarios
+
+## Listar
+
+```http
+GET /api/publicaciones/{id}/comentarios
+```
+
+## Crear
+
+```http
+POST /api/publicaciones/{id}/comentarios
+Authorization: Bearer {token}
+Content-Type: application/json
+```
+
+## Actualizar
+
+```http
+PUT /api/comentarios/{id}
+Authorization: Bearer {token}
+```
+
+## Eliminar
+
+```http
+DELETE /api/comentarios/{id}
+Authorization: Bearer {token}
+```
+
+## Modelos de Datos
+
+## Usuario
+
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "email": "string",
+  "phone": "string",
+  "created_at": "datetime"
+}
+```
+
+## Publicación
+
+```json
+{
+  "id": "uuid",
+  "title": "string",
+  "description": "string",
+  "user_id": "uuid",
+  "created_at": "datetime",
+  "updated_at": "datetime|null"
+}
+```
+
+## Comentario
+
+```json
+{
+  "id": "uuid",
+  "contenido": "string",
+  "user_id": "uuid",
+  "publicacion_id": "uuid",
+  "created_at": "datetime",
+  "updated_at": "datetime|null"
+}
+```
+
+---
+
+## Códigos de Error
+
+```
+400 VALIDATION_ERROR
+401 UNAUTHORIZED
+403 FORBIDDEN
+404 NOT_FOUND
+409 CONFLICT
+500 SERVER_ERROR
+```
