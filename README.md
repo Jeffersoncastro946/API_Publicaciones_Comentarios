@@ -167,11 +167,24 @@ Content-Type: application/json
 }
 ```
 
-## Listar publicaciones
+## Listar Publicaciones (con soporte para búsqueda)
 
 ```http
 GET /api/publicaciones
 ```
+
+## Buscar publicaciones por palabra clave
+
+```http
+GET /api/publicaciones?q={palabraClave}
+```
+
+Descripción:
+Permite buscar publicaciones cuyo título o descripción contenga la palabra clave especificada.
+
+| Parámetro | Tipo   | Obligatorio | Descripción                                           |
+| --------- | ------ | ----------- | ----------------------------------------------------- |
+| `q`       | string | No          | Palabra clave para buscar en `title` y `description`. |
 
 ## Obtener por ID
 
@@ -196,6 +209,8 @@ Authorization: Bearer {token}
 ---
 
 ## Comentarios
+
+Se agregaron endPoint adicionales para comentarios de esa manera el dia de mañana se ocupran ya estaran listos
 
 ## Listar
 
